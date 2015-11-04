@@ -1,5 +1,7 @@
 package Scrapper;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
@@ -9,20 +11,23 @@ import org.jsoup.select.Elements;
 
 import conf.Config;
 
-
-
 public class FlipkartReviewScrapper {
-	public static void main(String[] args) {
+	public static void FlipkartReviewScrapper() {
 		Document doc;
 		
-		String url ="http://www.flipkart.com/ambrane-p-1310-13000-mah/p/itme8kj5caedgg4h?pid=PWBE3GDFASZPWEGQ&ref=L%3A-8652693929287987991&srno=p_3&query=power+bank&otracker=from-search";
+		String url ="http://www.flipkart.com/asus-fe380cg-1g046a-1g052a-fonepad-8-tablet/p/itme3mvqqh2tufdh?pid=TABE3MVHHQJURZNF&al=pK62JZqIxbLfg9HJtYKWZsldugMWZuE7wkNiXfq8GiQKQ6VhnzMNOHQaK9jP1LJO%2BW7a%2F%2BTTydw%3D&ref=L%3A5354562021126326687&srno=b_1";
 		int totalNoOfComments=0;
 		try {
+			System.out.println("fkrs");
 			//Setting Proxy
 			System.setProperty("http.proxyHost", Config.config().getProperty("proxy_url"));
 			System.setProperty("http.proxyPort", Config.config().getProperty("proxy_port"));
-
-
+			
+			Socket socket = new Socket(Config.config().getProperty("socket_host"),
+					Integer.parseInt(Config.config().getProperty("socket_port")));
+			 socket.setSoTimeout(7000);
+socket.setKeepAlive(true);
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			doc = Jsoup.connect(url)
 					.data("query", "Java")
 					.userAgent("Mozilla")
@@ -43,7 +48,7 @@ public class FlipkartReviewScrapper {
 			int count=0;
 			
 			//Iterating over all the pages
-			for(int i=0;i<totalNoOfComments/10;i++){
+			for(int i=0;i<=totalNoOfComments/10;i++){
 				doc = Jsoup.connect(url)
 						.data("query", "Java")
 						.userAgent("Mozilla")
@@ -52,7 +57,8 @@ public class FlipkartReviewScrapper {
 						.post();
 				Elements element = doc.getElementsByClass("review-text");
 				for(Element temp: element){
-					System.out.println(temp.text());
+					//System.out.println(temp.text());
+					out.println(temp.text());
 					count++;
 				}
 				
@@ -60,6 +66,9 @@ public class FlipkartReviewScrapper {
 				url = doc.getElementsByClass("nav_bar_next_prev").select("a").last().attr("abs:href"); 
 				
 			}
+			out.println("EOF");
+			out.close();
+			socket.close();
 			System.out.println(count);
 			//System.out.println(count);	 
 		} catch (IOException e) {
