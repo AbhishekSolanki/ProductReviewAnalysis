@@ -10,6 +10,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import conf.Config;
+import dao.MongoDao;
+import dao.Store;
 
 public class FlipkartReviewScrapper {
 	public static void FlipkartReviewScrapper() {
@@ -42,7 +44,22 @@ socket.setKeepAlive(true);
 			if (matcher.find()) {
 				totalNoOfComments=Integer.parseInt(matcher.group(1));
 			}
-
+			
+			//product name
+			String productName = doc.getElementsByTag("h1").html().toLowerCase();
+			String category = doc.getElementsByClass("clp-breadcrumb").select("li").select("a").eq(2).html().toLowerCase();
+			String price=doc.getElementsByClass("selling-price").html().replaceAll("(?<=\\d),(?=\\d)", "").replaceAll("[^0-9.?!\\.]","").replace(".","");
+			String specification = Jsoup.parse((doc.getElementsByClass("specSection").html())).text();
+			System.out.println(specification);
+			Store store = new Store();
+			org.bson.Document document = new org.bson.Document();
+			document.append("productName",productName);
+			document.append("category", category);
+			document.append("price", price);
+			document.append("specification",specification);
+			store.MongoDocumentCreate(document);
+			
+			
 			//Getting link to open all review 
 			url = doc.getElementsByClass("reviewListBottom").select("a").first().attr("abs:href"); 
 			int count=0;
@@ -70,6 +87,7 @@ socket.setKeepAlive(true);
 			out.close();
 			socket.close();
 			System.out.println(count);
+			
 			//System.out.println(count);	 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
