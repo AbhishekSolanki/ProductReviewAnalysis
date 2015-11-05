@@ -54,6 +54,7 @@ socket.setKeepAlive(true);
 			Store store = new Store();
 			org.bson.Document document = new org.bson.Document();
 			document.append("productName",productName);
+			document.append("url", url);
 			document.append("category", category);
 			document.append("price", price);
 			document.append("specification",specification);

@@ -20,6 +20,7 @@ private static int doc_id =0;
 	public void MongoDocumentCreate(Document document){
 		//insert in mysql and get product ref
 		document.append("refId", doc_id);
+		document.append("review",new ArrayList<>());
 		MongoDao mongoDao = new MongoDao();
 		mongoDao.MongoDocumentCreate(document);
 	}
@@ -42,6 +43,7 @@ private static int doc_id =0;
 			List<DBObject> mongoBatch=null;
 			int count = 0;
 			mongoBatch = new ArrayList<>();
+			MongoDao mongoDao = new MongoDao();
 			while ((line = dis.readLine()) != null) {
 				count++;
 				if(!line.equals("EOF")){
@@ -49,7 +51,9 @@ private static int doc_id =0;
 					//mongocode object code here
 					DBObject document = new BasicDBObject();
 					document.put(String.valueOf(count), line);
-					mongoBatch.add(document);
+					
+					mongoDao.MongoReviewStorage(document,doc_id);
+				//	mongoBatch.add(document);
 					}
 				else{
 					dis.close();
@@ -59,10 +63,10 @@ private static int doc_id =0;
 					break;
 				}
 			}
-			if(mongoBatch.size()>0){
+			/*if(mongoBatch.size()>0){
 				MongoDao mongoDao = new MongoDao();
-				mongoDao.MongoReviewStore(mongoBatch,String.valueOf(doc_id);
-			}
+				mongoDao.MongoReviewStore(mongoBatch,String.valueOf(doc_id));
+			}*/
 			
 
 
