@@ -34,7 +34,6 @@ private static int doc_id =0;
 			System.out.println("dsr");
 			listener = new ServerSocket(Integer.parseInt(Config.config().getProperty("socket_port")));
 			clientSocket = listener.accept();
-
 			//clientSocket.setSoTimeout(Integer.parseInt(Config.config().getProperty("socket_timeout")));
 			clientSocket.setKeepAlive(true);
 			is = clientSocket.getInputStream();
