@@ -12,6 +12,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteOperation;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -58,7 +59,7 @@ public class MongoDao{
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}finally{
-			
+			MongoConnection.mongoClient.close();
 		}
 	}
 	
@@ -71,7 +72,7 @@ public class MongoDao{
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}finally{
-			
+			MongoConnection.mongoClient.close();
 		}
 	}
 }

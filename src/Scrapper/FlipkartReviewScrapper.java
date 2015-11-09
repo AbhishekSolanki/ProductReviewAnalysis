@@ -24,12 +24,12 @@ public class FlipkartReviewScrapper {
 			//Setting Proxy
 			System.setProperty("http.proxyHost", Config.config().getProperty("proxy_url"));
 			System.setProperty("http.proxyPort", Config.config().getProperty("proxy_port"));
-			
+			/*
 			Socket socket = new Socket(Config.config().getProperty("socket_host"),
 					Integer.parseInt(Config.config().getProperty("socket_port")));
 			 socket.setSoTimeout(7000);
 socket.setKeepAlive(true);
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);*/
 			doc = Jsoup.connect(url)
 					.data("query", "Java")
 					.userAgent("Mozilla")
@@ -77,7 +77,8 @@ socket.setKeepAlive(true);
 				Elements element = doc.getElementsByClass("review-text");
 				for(Element temp: element){
 					//System.out.println(temp.text());
-					out.println(temp.text());
+					//out.println(temp.text());
+					store.DataStreamReceiver(temp.text());
 					count++;
 				}
 				
@@ -85,10 +86,10 @@ socket.setKeepAlive(true);
 				url = doc.getElementsByClass("nav_bar_next_prev").select("a").last().attr("abs:href"); 
 				
 			}
-			out.println("EOF");
+			/*out.println("EOF");
 			out.close();
 			socket.close();
-			System.out.println(count);
+			System.out.println(count);*/
 			
 			//System.out.println(count);	 
 		} catch (IOException e) {

@@ -14,18 +14,18 @@ public class ExecMain {
 		try {
 			Thread data_store_thread = new Thread(){
 					public void run(){
-						Store.DataStreamReceiver();
+						//Store.DataStreamReceiver();
 						}
 					};
 					
 			Thread flipkart_scrapper_thread = new Thread(){
 						public void run(){
-						//	FlipkartReviewScrapper.FlipkartReviewScrapper();
-							AmazonReviewScrapper.AmazonReviewScrapper();
+							FlipkartReviewScrapper.FlipkartReviewScrapper();
+							//AmazonReviewScrapper.AmazonReviewScrapper();
 						} 
 					};
 					
-					data_store_thread.start();
+					//data_store_thread.start();
 					flipkart_scrapper_thread.start();
 
 		} catch (Exception e) {

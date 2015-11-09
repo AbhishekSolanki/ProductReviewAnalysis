@@ -23,11 +23,11 @@ public class AmazonReviewScrapper {
 			//Setting Proxy
 			System.setProperty("http.proxyHost", Config.config().getProperty("proxy_url"));
 			System.setProperty("http.proxyPort", Config.config().getProperty("proxy_port"));
-			Socket socket = new Socket(Config.config().getProperty("socket_host"),
+			/*Socket socket = new Socket(Config.config().getProperty("socket_host"),
 					Integer.parseInt(Config.config().getProperty("socket_port")));
 			socket.setSoTimeout(7000);
 			socket.setKeepAlive(true);
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);*/
 			doc = Jsoup.connect(url)
 					.data("query", "Java")
 					.userAgent("Mozilla")
@@ -65,31 +65,33 @@ public class AmazonReviewScrapper {
 						.cookie("auth", "token")
 						.timeout(Integer.parseInt(Config.config().getProperty("timeout")))
 						.post();
-				url = doc.getElementsByClass("a-last").select("a").last().attr("abs:href");
+				
 				Elements element = doc.getElementsByClass("review-text");
 				for(Element temp: element){
-					out.println(temp.text());
+					//out.println(temp.text());
+					store.DataStreamReceiver(temp.text());
 					count++;
 				}
-				
+				url = doc.getElementsByClass("a-last").select("a").last().attr("abs:href");
 				//next page link
 
 
-
+				
 				//url = doc.getElementsByClass("a-pagination").select("li").last().select("a").attr("abs:href");
 				System.out.println("Current url"+ url);
 
 			}
 			System.out.println(count);
-			out.println("EOF");
+			/*out.println("EOF");
 			out.close();
 			socket.close();
-			System.out.println(count);
+			System.out.println(count);*/
 			
 			//System.out.println(count);	 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+
 		}
 
 	}
