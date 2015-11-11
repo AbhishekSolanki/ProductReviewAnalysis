@@ -30,7 +30,7 @@ public Store(){
 		mongoDao.MongoDocumentCreate(document);
 	}
 	
-	public static void DataStreamReceiver(String username,String user_profile_url,int rating,String review_text) {
+	public void DataStreamReceiver(String username,String user_profile_url,int rating,String review_text,int revirew_no) {
 		/*Socket	clientSocket = null;
 		InputStream is = null;
 		DataInputStream dis = null;
@@ -72,6 +72,7 @@ public Store(){
 			}*/
 			count++;
 			DBObject document = new BasicDBObject();
+			document.put("reviewNo", revirew_no);
 			document.put("user", username);
 			document.put("userUrl", user_profile_url);
 			document.put("commentRate", rating);

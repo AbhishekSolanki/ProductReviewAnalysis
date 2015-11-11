@@ -20,7 +20,7 @@ public class ExecMain {
 					
 			Thread flipkart_scrapper_thread = new Thread(){
 						public void run(){
-							FlipkartReviewScrapper.FlipkartReviewScrapper();
+							//FlipkartReviewScrapper.FlipkartReviewScrapper();
 							//AmazonReviewScrapper.AmazonReviewScrapper();
 						} 
 					};

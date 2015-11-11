@@ -14,10 +14,10 @@ import dao.MongoDao;
 import dao.Store;
 
 public class FlipkartReviewScrapper {
-	public static void FlipkartReviewScrapper() {
+	public static void FlipkartReviewScrapper(String url) {
 		Document doc;
-		
-		String url ="http://www.flipkart.com/asus-fe380cg-1g046a-1g052a-fonepad-8-tablet/p/itme3mvqqh2tufdh?pid=TABE3MVHHQJURZNF&al=pK62JZqIxbLfg9HJtYKWZsldugMWZuE7wkNiXfq8GiQKQ6VhnzMNOHQaK9jP1LJO%2BW7a%2F%2BTTydw%3D&ref=L%3A5354562021126326687&srno=b_1";
+
+		//	String url ="http://www.flipkart.com/asus-fe380cg-1g046a-1g052a-fonepad-8-tablet/p/itme3mvqqh2tufdh?pid=TABE3MVHHQJURZNF&al=pK62JZqIxbLfg9HJtYKWZsldugMWZuE7wkNiXfq8GiQKQ6VhnzMNOHQaK9jP1LJO%2BW7a%2F%2BTTydw%3D&ref=L%3A5354562021126326687&srno=b_1";
 		int totalNoOfComments=0;
 		try {
 			System.out.println("fkrs");
@@ -38,17 +38,25 @@ socket.setKeepAlive(true);
 					.post();
 
 			//total no. of comments, helpful for controlling loops eg. Read more top reviews(68)
-			String s = doc.getElementsByClass("lnkViewMore").last().text();
-			Pattern pattern = Pattern.compile("\\((.*?)\\)");
-			Matcher matcher = pattern.matcher(s);
-			if (matcher.find()) {
-				totalNoOfComments=Integer.parseInt(matcher.group(1));
+			String s =null;
+			try{
+				doc.getElementsByClass("lnkViewMore").last().text();
+				Pattern pattern = Pattern.compile("\\((.*?)\\)");
+				Matcher matcher = pattern.matcher(s);
+				if (matcher.find()) {
+					totalNoOfComments=Integer.parseInt(matcher.group(1));
+				}
+			}catch(Exception ex){
+
+				totalNoOfComments = doc.getElementsByClass("review-text").size();
 			}
-			
+
+
 			//product name
 			String productName = doc.getElementsByTag("h1").html().toLowerCase();
 			String category = doc.getElementsByClass("clp-breadcrumb").select("li").select("a").eq(2).html().toLowerCase();
-			int price=Integer.parseInt(doc.getElementsByClass("selling-price").html().replaceAll("(?<=\\d),(?=\\d)", "").replaceAll("[^0-9.?!\\.]","").replace(".",""));
+			System.out.println(doc.getElementsByClass("selling-price").html());
+			int price=Integer.parseInt(doc.getElementsByClass("selling-price").first().html().replaceAll("(?<=\\d),(?=\\d)", "").replaceAll("[^0-9.?!\\.]","").replace(".",""));
 			String specification = Jsoup.parse((doc.getElementsByClass("specSection").html())).text();
 			System.out.println(specification);
 			Store store = new Store();
@@ -60,12 +68,16 @@ socket.setKeepAlive(true);
 			document.append("price", price);
 			document.append("specification",specification);
 			store.MongoDocumentCreate(document);
-			
-			
+
+
 			//Getting link to open all review 
-			url = doc.getElementsByClass("reviewListBottom").select("a").first().attr("abs:href"); 
+			try{
+				url = doc.getElementsByClass("reviewListBottom").select("a").first().attr("abs:href");
+			}catch(Exception ex){
+
+			}
 			int count=0;
-			
+
 			//Iterating over all the pages
 			for(int i=0;i<=totalNoOfComments/10;i++){
 				doc = Jsoup.connect(url)
@@ -88,20 +100,23 @@ socket.setKeepAlive(true);
 					}
 					System.out.println("USERNAME"+ username +" "+user_profile_url);
 					String review = temp.getElementsByClass("review-text").text();
-					store.DataStreamReceiver(username,user_profile_url,stars,review);
+					store.DataStreamReceiver(username,user_profile_url,stars,review,count);
 					count++;
 				}
-				
+
 				//next page link
-				url = doc.getElementsByClass("nav_bar_next_prev").select("a").last().attr("abs:href"); 
-				
+				try{
+					url = doc.getElementsByClass("nav_bar_next_prev").select("a").last().attr("abs:href"); 
+				}catch(Exception ex){
+
+				}
 			}
 			store.closeConnection();
 			/*out.println("EOF");
 			out.close();
 			socket.close();
 			System.out.println(count);*/
-			
+
 			//System.out.println(count);	 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
