@@ -59,7 +59,7 @@ public class MongoDao{
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}finally{
-			MongoConnection.mongoClient.close();
+			//MongoConnection.mongoClient.close();
 		}
 	}
 	
@@ -70,9 +70,15 @@ public class MongoDao{
 						new Document().append("$push", new Document().append("review", document)));
 		}
 		}catch(Exception ex){
+			MongoConnection.mongoClient.close();
 			ex.printStackTrace();
 		}finally{
-			MongoConnection.mongoClient.close();
+			//MongoConnection.mongoClient.close();
 		}
+	}
+	
+	
+	public void CloseConnection(){
+		MongoConnection.mongoClient.close();
 	}
 }

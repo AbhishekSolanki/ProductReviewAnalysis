@@ -48,7 +48,7 @@ socket.setKeepAlive(true);
 			//product name
 			String productName = doc.getElementsByTag("h1").html().toLowerCase();
 			String category = doc.getElementsByClass("clp-breadcrumb").select("li").select("a").eq(2).html().toLowerCase();
-			String price=doc.getElementsByClass("selling-price").html().replaceAll("(?<=\\d),(?=\\d)", "").replaceAll("[^0-9.?!\\.]","").replace(".","");
+			int price=Integer.parseInt(doc.getElementsByClass("selling-price").html().replaceAll("(?<=\\d),(?=\\d)", "").replaceAll("[^0-9.?!\\.]","").replace(".",""));
 			String specification = Jsoup.parse((doc.getElementsByClass("specSection").html())).text();
 			System.out.println(specification);
 			Store store = new Store();
@@ -74,11 +74,21 @@ socket.setKeepAlive(true);
 						.cookie("auth", "token")
 						.timeout(Integer.parseInt(Config.config().getProperty("timeout")))
 						.post();
-				Elements element = doc.getElementsByClass("review-text");
+				Elements element = doc.getElementsByClass("fk-review");
 				for(Element temp: element){
 					//System.out.println(temp.text());
 					//out.println(temp.text());
-					store.DataStreamReceiver(temp.text());
+					int stars = Integer.parseInt(temp.getElementsByClass("fk-stars").attr("title").substring(0, 1));
+					String username=null;
+					String user_profile_url = "NA";
+					if((username = temp.getElementsByClass("load-user-widget").html().replace(".", "")).isEmpty()){
+						username=temp.getElementsByClass("review-username").text();//.replace(".", "");
+					}else{
+						user_profile_url = temp.getElementsByClass("load-user-widget").attr("href");
+					}
+					System.out.println("USERNAME"+ username +" "+user_profile_url);
+					String review = temp.getElementsByClass("review-text").text();
+					store.DataStreamReceiver(username,user_profile_url,stars,review);
 					count++;
 				}
 				
@@ -86,6 +96,7 @@ socket.setKeepAlive(true);
 				url = doc.getElementsByClass("nav_bar_next_prev").select("a").last().attr("abs:href"); 
 				
 			}
+			store.closeConnection();
 			/*out.println("EOF");
 			out.close();
 			socket.close();
