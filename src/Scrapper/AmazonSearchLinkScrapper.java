@@ -10,6 +10,7 @@ import conf.Config;
 
 public class AmazonSearchLinkScrapper {
 
+<<<<<<< HEAD
 	public  void amazonQuery(String keyword){
 		Document doc;
 
@@ -17,6 +18,16 @@ public class AmazonSearchLinkScrapper {
 
 		try {
 			System.out.println("Amazon Search Link Scrapper.......BEGIN");
+=======
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Document doc;
+
+		String url ="http://www.amazon.in/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=bags";
+
+		try {
+			System.out.println("fkrs");
+>>>>>>> origin/master
 			//Setting Proxy
 			System.setProperty("http.proxyHost", Config.config().getProperty("proxy_url"));
 			System.setProperty("http.proxyPort", Config.config().getProperty("proxy_port"));
@@ -35,8 +46,14 @@ public class AmazonSearchLinkScrapper {
 			try{
 
 				totalPage = Integer.parseInt(doc.getElementsByClass("pagnDisabled").html());
+<<<<<<< HEAD
 			}catch(Exception ex){
 				//Nothing to do just to avoid null pointer exception
+=======
+				System.out.println(totalPage);
+			}catch(Exception ex){
+
+>>>>>>> origin/master
 			}
 			for(int i=0;i<=totalPage;i++){
 				doc = Jsoup.connect(url)
@@ -62,6 +79,7 @@ public class AmazonSearchLinkScrapper {
 						url="http://www.amazon.in"+url;
 					}
 				}catch(Exception ex){
+<<<<<<< HEAD
 					//Nothing to do just to avoid null pointer exceptio
 				}
 			}
@@ -77,4 +95,23 @@ public class AmazonSearchLinkScrapper {
 		}
 
 	}
+=======
+
+				}
+			}
+			for(String uri:url_list){
+				System.out.println(uri);
+				//FlipkartReviewScrapper.FlipkartReviewScrapper(uri);
+			}
+			System.out.println(url_list);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+
+	}
+
+>>>>>>> origin/master
 }

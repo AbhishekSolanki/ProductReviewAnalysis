@@ -57,7 +57,11 @@ public MongoDao() {
 						new Document().append("$push", new Document().append("review", document)));
 		}
 		}catch(Exception ex){
+<<<<<<< HEAD
 			//MongoConnection.mongoClient.close();
+=======
+			MongoConnection.mongoClient.close();
+>>>>>>> origin/master
 			ex.printStackTrace();
 		}finally{
 			//MongoConnection.mongoClient.close();

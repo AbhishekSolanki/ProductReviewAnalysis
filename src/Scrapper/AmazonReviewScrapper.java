@@ -12,10 +12,17 @@ import conf.Config;
 import dao.Store;
 
 public class AmazonReviewScrapper {
+<<<<<<< HEAD
 
 	public  void amazonReviewScrapper(String url) {
 		Document doc;
 		System.out.println("inside amazon review scrapper");
+=======
+	public static void AmazonReviewScrapper(String url) {
+		Document doc;
+
+		//String url ="http://www.amazon.in/iPro-iP40-Powerbank-Smartphones-Tablets13000/dp/B015H3VXI2/ref=sr_1_4?s=electronics&ie=UTF8&qid=1446720866&sr=1-4&keywords=powerbank";
+>>>>>>> origin/master
 		int totalNoOfComments=0;
 		Store store = null;
 		try {
@@ -93,6 +100,7 @@ public class AmazonReviewScrapper {
 						.cookie("auth", "token")
 						.timeout(Integer.parseInt(Config.config().getProperty("timeout")))
 						.post();
+<<<<<<< HEAD
 
 				Elements element = doc.getElementsByClass("review");
 				for(Element temp: element){
@@ -109,6 +117,27 @@ public class AmazonReviewScrapper {
 					store.DataStreamReceiver(username,user_profile_url,stars,review,count,refId);
 					count++;
 				}
+=======
+				
+				Elements element = doc.getElementsByClass("review");
+				for(Element temp: element){
+					//out.println(temp.text());
+					int stars = Integer.parseInt(temp.getElementsByClass("a-icon-alt").html().substring(0, 1));
+					String username = temp.getElementsByClass("author").html();
+					String user_profile_url = "http://www.amazon.in"+temp.getElementsByClass("author").attr("href");;
+					System.out.println("STARS"+user_profile_url);
+					String review = temp.getElementsByClass("review-text").text();
+					store.DataStreamReceiver(username,user_profile_url,stars,review,count);
+					count++;
+				}
+				
+				try{
+				url = doc.getElementsByClass("a-last").select("a").last().attr("abs:href");
+				}catch(NullPointerException nu){
+					break;
+				}
+				//next page link
+>>>>>>> origin/master
 
 				try{
 					url = doc.getElementsByClass("a-last").select("a").last().attr("abs:href");

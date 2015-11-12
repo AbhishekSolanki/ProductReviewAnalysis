@@ -22,9 +22,18 @@ public class Store {
 		mongoDao.MongoDocumentCreate(document);
 		return refId;
 	}
+<<<<<<< HEAD
 
 	public void DataStreamReceiver(String username,String user_profile_url,int rating,String review_text,int revirew_no,String refId) {
 		
+=======
+	
+	public void DataStreamReceiver(String username,String user_profile_url,int rating,String review_text,int revirew_no) {
+		/*Socket	clientSocket = null;
+		InputStream is = null;
+		DataInputStream dis = null;
+		ServerSocket listener = null;*/
+>>>>>>> origin/master
 		try {
 			
 			DBObject document = new BasicDBObject();
@@ -33,16 +42,28 @@ public class Store {
 			document.put("userUrl", user_profile_url);
 			document.put("commentRate", rating);
 			document.put("comment", review_text);
+<<<<<<< HEAD
 			mongoDao.MongoReviewStorage(document,refId);
+=======
+			mongoDao.MongoReviewStorage(document,doc_id);
+>>>>>>> origin/master
 
 
 		} 
 		catch (Exception e) {
+<<<<<<< HEAD
 			//mongoDao.CloseConnection();
+=======
+			mongoDao.CloseConnection();
+>>>>>>> origin/master
 			e.printStackTrace();
 
 		}
 
+	}
+	
+	public void closeConnection(){
+		mongoDao.CloseConnection();
 	}
 
 	public void closeConnection(){
