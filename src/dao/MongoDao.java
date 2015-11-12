@@ -1,27 +1,16 @@
 package dao;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bson.BSONObject;
 import org.bson.Document;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.BulkWriteOperation;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-
-
 import conf.Config;
 
 public class MongoDao{
-	MongoDatabase db=null;
-	public MongoDao() {
+	
+	public static MongoDatabase db=null;
+	
+public MongoDao() {
 		db = MongoConnection.db();
 		
 	}
@@ -32,14 +21,12 @@ public class MongoDao{
 		
 	}
 
+	//FUNCTION NOT IN USE - FOR BULK STORAGE
 	public void MongoReviewStore(List<DBObject> reviewList,String documentId){
 		System.out.println("insider");
 		try{
 			if(db!=null){
-				/*db.getCollection(Config.config().getProperty("mongo_collection")).insertOne(
-						new Document("prdref",prdref)
-								new Document()
-								));*/
+			
 			//bulk write			
 				db.getCollection(Config.config().getProperty("mongo_collection")).updateOne(new Document().append("refId", documentId),
 						new Document().append("$push", new Document().append("review", reviewList)));
@@ -59,20 +46,26 @@ public class MongoDao{
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}finally{
-			MongoConnection.mongoClient.close();
+			//MongoConnection.mongoClient.close();
 		}
 	}
 	
-	public void MongoReviewStorage(DBObject document,int doc_id){
+	public void MongoReviewStorage(DBObject document,String doc_id){
 		try{
 			if(db!=null){
 				db.getCollection(Config.config().getProperty("mongo_collection")).updateOne(new Document().append("refId", doc_id),
 						new Document().append("$push", new Document().append("review", document)));
 		}
 		}catch(Exception ex){
+			//MongoConnection.mongoClient.close();
 			ex.printStackTrace();
 		}finally{
-			MongoConnection.mongoClient.close();
+			//MongoConnection.mongoClient.close();
 		}
+	}
+	
+	
+	public void CloseConnection(){
+		MongoConnection.mongoClient.close();
 	}
 }
