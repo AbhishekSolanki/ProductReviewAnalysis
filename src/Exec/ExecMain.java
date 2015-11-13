@@ -21,6 +21,10 @@ public class ExecMain {
 			};
 
 			Thread flipkart_scrapper_thread = new Thread(){
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> origin/master
 				public void run(){
 					FlipkartSearchLinkScrapper flipkartSearchLinkScrapper = new FlipkartSearchLinkScrapper();
 					flipkartSearchLinkScrapper.flipkartquery(keyword);
@@ -30,6 +34,19 @@ public class ExecMain {
 			//flipkart_scrapper_thread.start();
 			amazon_scrapper_thread.start();
 			
+<<<<<<< HEAD
+=======
+=======
+						public void run(){
+							//FlipkartReviewScrapper.FlipkartReviewScrapper();
+							//AmazonReviewScrapper.AmazonReviewScrapper();
+						} 
+					};
+					
+					//data_store_thread.start();
+					flipkart_scrapper_thread.start();
+>>>>>>> origin/master
+>>>>>>> origin/master
 
 		} catch (Exception e) {
 			e.printStackTrace();
