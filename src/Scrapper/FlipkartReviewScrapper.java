@@ -97,7 +97,7 @@ public class FlipkartReviewScrapper {
 					String review_no = new Timestamp(date.getTime()).toString()+random;
 					System.out.println(username +" "+user_profile_url);
 					String review = temp.getElementsByClass("review-text").text();
-					store.DataStreamReceiver(username,user_profile_url,stars,review,review_no,refId);
+				//	store.DataStreamReceiver(username,user_profile_url,stars,review,review_no,refId);
 					count++;
 				}
 

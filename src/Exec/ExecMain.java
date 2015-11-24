@@ -1,3 +1,11 @@
+/*
+This is the main file the "keyword" value is the string which is fired on the e-commerce website search box.
+
+There are two thread one for flipkart.com and another for amazon.in, currently only amazon.in is working.
+
+When the amazon_scrapper_thread is executed it first get all the links for the products in search result by executing
+"AmazonSearchLinkScrapper" class which takes keyword as the parameter
+*/
 package Exec;
 
 import Scrapper.AmazonReviewScrapper;
@@ -9,7 +17,7 @@ public class ExecMain {
 
 	public static void main(String[] args) {
 
-		final String keyword = "wallet";
+		final String keyword = "headphones";
 
 		try {
 

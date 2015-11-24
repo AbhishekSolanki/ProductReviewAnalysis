@@ -23,7 +23,7 @@ public class Store {
 		return refId;
 	}
 
-	public void DataStreamReceiver(String username,String user_profile_url,int rating,String review_text,String revirew_no,String refId) {
+	public void DataStreamReceiver(String username,String user_profile_url,int rating,String review_text,String revirew_no,String refId,String post_date) {
 		
 		try {
 			
@@ -33,6 +33,7 @@ public class Store {
 			document.put("userUrl", user_profile_url);
 			document.put("commentRate", rating);
 			document.put("comment", review_text);
+			document.put("date", post_date);
 			mongoDao.MongoReviewStorage(document,refId);
 
 

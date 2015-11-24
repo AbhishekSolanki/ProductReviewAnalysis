@@ -1,3 +1,7 @@
+/*
+This class takes url as input of a product and scraps all the details from the page and
+stores in mongodb
+*/
 package Scrapper;
 
 import java.io.IOException;
@@ -11,12 +15,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import conf.Config;
 import dao.Store;
+import utils.DateConversion;
 
 public class AmazonReviewScrapper {
 
 	public  void amazonReviewScrapper(String url) {
 		Document doc;
-		System.out.println("inside amazon review scrapper");
+		System.out.println("inside amazon review scrapper"+url);
 		int totalNoOfComments=0;
 		Store store = null;
 		try {
@@ -81,57 +86,72 @@ public class AmazonReviewScrapper {
 
 			//Getting link to open all review 
 			url = doc.getElementsByClass("a-link-emphasis").attr("abs:href"); 
-			System.out.println(url);
-			int count=0;
-			Pattern pattern = Pattern.compile("profile/(.*?)/");
+			
+
+				int count=0;
+				Pattern pattern = Pattern.compile("profile/(.*?)/");
 
 
-			//Iterating over all the pages
-			for(int i=0;i<=totalNoOfComments/10;i++){
-				System.out.println("URL"+url);
-				doc = Jsoup.connect(url)
-						.data("query", "Java")
-						.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.120 Safari/535.2")
-						.cookie("auth", "token")
-						.timeout(Integer.parseInt(Config.config().getProperty("timeout")))
-						.post();
+				//Iterating over all the pages
+				for(int i=0;i<=totalNoOfComments/10;i++){
+					if(!url.equals(null)){
+					System.out.println("URL"+url);
+					doc = Jsoup.connect(url)
+							.data("query", "Java")
+							.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.120 Safari/535.2")
+							.cookie("auth", "token")
+							.timeout(Integer.parseInt(Config.config().getProperty("timeout")))
+							.post();
 
-				Elements element = doc.getElementsByClass("review");
-				for(Element temp: element){
-					int stars = Integer.parseInt(temp.getElementsByClass("a-icon-alt").html().substring(0, 1));
-					String username = temp.getElementsByClass("author").html();
-					Matcher matcher = pattern.matcher(temp.getElementsByClass("author").attr("href"));
-					String user_profile_url = "NA";
-					if (matcher.find()) {
-						user_profile_url = matcher.group(1);
+					Elements element = doc.getElementsByClass("review");
+					for(Element temp: element){
+						int stars = Integer.parseInt(temp.getElementsByClass("a-icon-alt").html().substring(0, 1));
+						String username = temp.getElementsByClass("author").html();
+						Matcher matcher = pattern.matcher(temp.getElementsByClass("author").attr("href"));
+						String user_profile_url = "NA";
+						if (matcher.find()) {
+							user_profile_url = matcher.group(1);
+						}
+						String post_date_raw=temp.getElementsByClass("review-date").html().replace("on ","");
+						String post_date = DateConversion.dateParse(post_date_raw);
+						java.util.Date date= new java.util.Date();
+						int random = 0 +(int)(Math.random()*1000);
+						String review_no = new Timestamp(date.getTime()).toString()+random;
+						System.out.println(user_profile_url);
+						String review = temp.getElementsByClass("review-text").text();
+						store.DataStreamReceiver(username,user_profile_url,stars,review,review_no,refId,post_date);
+						count++;
 					}
-					java.util.Date date= new java.util.Date();
-					int random = 0 +(int)(Math.random()*1000);
-					String review_no = new Timestamp(date.getTime()).toString()+random;
-					System.out.println(user_profile_url);
-					String review = temp.getElementsByClass("review-text").text();
-					store.DataStreamReceiver(username,user_profile_url,stars,review,review_no,refId);
-					count++;
+
+					try{
+						url = doc.getElementsByClass("a-last").select("a").last().attr("abs:href");
+						System.out.println("TEST"+url);
+					}catch(NullPointerException nu){
+						try{
+							url = "http://www.amazon.in"+doc.getElementsByClass("a-last").select("a").last().attr("href");
+						}catch(Exception e){
+							System.out.println("NUNUNUNUNUNU @"+url);
+							
+						}
+						
+					}
+					//next page link
+
+					System.out.println("Current url"+ url);
+
 				}
-
-				try{
-					url = doc.getElementsByClass("a-last").select("a").last().attr("abs:href");
-				}catch(NullPointerException nu){
-					break;
-				}
-				//next page link
-
-				System.out.println("Current url"+ url);
-
+				
+				
 			}
-			store.closeConnection();
-			System.out.println(count);
+				System.out.println(count);
+				store.closeConnection();
+			
 		} catch (IOException e) {
 			if(store!=null){
 				store.closeConnection();
 			}
 			//e.printStackTrace();
-			
+
 		}
 	}
 }
