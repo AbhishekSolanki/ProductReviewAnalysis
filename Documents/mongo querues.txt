@@ -1,0 +1,34 @@
+#####################################################
+#  THIS DOCUMENT CONTAINS ALL THE MONGO QUERIES		#
+#  USED IN THE PROJECT. PLEASE NOTE THESE QUERIES	#
+#  CAN BE RUN FROM SHELL ONLY. IT CAN'T BE USED		#
+#  WITH ANY PROGRAMMING LANGUAGE.					#
+#####################################################
+
+#1# FIND DOCUMENT MATCHING SOME USERNAME ##
+db.getCollection('productReviewCol').find({
+    "review.user":{$in:["Amazon Customer"]
+        }
+    })
+
+#2# FETCH ALL DISTINCT USERNAME ##
+db.runCommand ( { distinct: "productReviewCol", key: "review.user" } )
+
+#3# PROJECT ONLY COMMENT FOR MATCHING USER ##
+db.productReviewCol.find({"review.user" : "Amazon Customer"},{"review.$.comment" : 1})
+
+#4# GROUP BY USERURL AND PROJECT COMMENT ##
+db.getCollection('productReviewCol').aggregate(
+    {$unwind:"$review"},
+    {$group:{_id:"$review.userUrl",comments:{$push:"$review.comment"}}}
+    )
+
+#5# FETCH ALL THE COMMENTS OF A PARTICULAR USER ##
+db.getCollection('productReviewCol').aggregate(
+	{$unwind:"$review"},
+	{$match:{"review.user":{$in:[]]}}},
+	{$project:{"review.comment":1,"review.reviewNo":1}}
+)
+
+#6# EXPORT ALL DOCUMENT TO JSON FILE ##
+mongoexport --db productReview --collection productReviewCol -out productReviewJsonFile.json
